@@ -10,7 +10,79 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_05_141100) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_05_183946) do
+  create_table "addresses", force: :cascade do |t|
+    t.string "street_address", null: false
+    t.string "city", null: false
+    t.string "postal_code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "customers", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "address_id", null: false
+    t.string "phone", null: false
+    t.string "email"
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "employees", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "address_id", null: false
+    t.string "phone", null: false
+    t.string "email"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "order_statuses", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.integer "restaurant_id", null: false
+    t.integer "customer_id", null: false
+    t.integer "order_status_id", null: false
+    t.integer "restaurant_rating"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "product_orders", force: :cascade do |t|
+    t.integer "product_id", null: false
+    t.integer "order_id", null: false
+    t.integer "product_quantity", null: false
+    t.integer "product_unit_cost", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "products", force: :cascade do |t|
+    t.integer "restaurant_id", null: false
+    t.string "name", null: false
+    t.string "description"
+    t.integer "cost", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "restaurants", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "address_id", null: false
+    t.string "phone", null: false
+    t.string "email"
+    t.string "name", null: false
+    t.integer "price_range", default: 1, null: false
+    t.boolean "active", default: true, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name", null: false
     t.string "email", default: "", null: false
@@ -24,4 +96,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_05_141100) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "customers", "addresses"
+  add_foreign_key "customers", "users"
+  add_foreign_key "employees", "addresses"
+  add_foreign_key "employees", "users"
+  add_foreign_key "orders", "customers"
+  add_foreign_key "orders", "order_statuses"
+  add_foreign_key "orders", "restaurants"
+  add_foreign_key "product_orders", "orders"
+  add_foreign_key "product_orders", "products"
+  add_foreign_key "products", "restaurants"
+  add_foreign_key "restaurants", "addresses"
+  add_foreign_key "restaurants", "users"
 end

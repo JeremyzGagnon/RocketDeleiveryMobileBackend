@@ -5,10 +5,8 @@ class CreateProducts < ActiveRecord::Migration[7.0]
       t.string :name, null: false
       t.string :description
       t.integer :cost, null: false
-      t.datetime :created_at
-      t.datetime :updated_at
 
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end

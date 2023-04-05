@@ -5,10 +5,8 @@ class CreateOrders < ActiveRecord::Migration[7.0]
       t.integer :customer_id, null: false
       t.integer :order_status_id, null: false
       t.integer :restaurant_rating
-      t.datetime :created_at
-      t.datetime :updated_at
 
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end

@@ -5,10 +5,8 @@ class CreateProductOrders < ActiveRecord::Migration[7.0]
       t.integer :order_id, null: false
       t.integer :product_quantity, null: false
       t.integer :product_unit_cost, null: false
-      t.datetime :created_at
-      t.datetime :updated_at
 
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end
