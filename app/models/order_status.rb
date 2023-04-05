@@ -1,3 +1,3 @@
 class OrderStatus < ApplicationRecord
-    belongs_to :orders
+    # belongs_to :orders
 end
