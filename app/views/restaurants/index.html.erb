@@ -2,13 +2,42 @@
 
 <h1>Restaurants</h1>
 
-<div id="restaurants">
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Phone</th>
+      <th scope="col">Email</th>
+      <th scope="col">Adress</th>
+    </tr>
+  </thead>
+  <tbody>
   <% @restaurants.each do |restaurant| %>
-    <%= render restaurant %>
-    <p>
-      <%= link_to "Show this restaurant", restaurant %>
-    </p>
-  <% end %>
-</div>
+    <tr>
+      <td><%= restaurant.name%></td>
+      <td><%= restaurant.phone%></td>
+      <td><%= restaurant.email%></td>
+      <td><%= restaurant.address_id%></td>
+      <td><%= link_to 'Show', restaurant %></td>
+      <td><%= link_to 'Edit', edit_restaurant_path(restaurant) %></td>
+    <tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
 
 <%= link_to "New restaurant", new_restaurant_path %>
+
+
+<%# <div id="restaurants">
+#   <% @restaurants.each do |restaurant| %>
+     <%# <%= render restaurant %> 
+    <%# <p> %>
+      <%# <%= link_to "Show this restaurant", restaurant %> 
+    <%# </p> %>
+  <%# <% end %> 
+<%# </div> %>
+
+
+      <%# <td><%= link_to 'Delete', restaurant_path(restaurant), method: :delete %>
