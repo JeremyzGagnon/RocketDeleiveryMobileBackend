@@ -1,4 +1,5 @@
 class User < ApplicationRecord
+  
   # has_many :restaurants
   # has_one :employees
   # has_one :customers

@@ -1,7 +1,6 @@
-<% if user_signed_in? %> 
- <div> Welcome <%= current_user.email %> </div> 
+<% if user_signed_in? && Employee.exists?(email: current_user.email) %> 
+  <div> Welcome <%= current_user.email %> </div> 
   <%= button_to "Sign out", destroy_user_session_path, method: :delete %> 
 <% else %>
-  <%= button_to "Sign in", new_user_session_path %> 
+  <div> Welcome stranger </div> 
 <% end %>
-<h1>Hello DigitalOcean!</h1>
