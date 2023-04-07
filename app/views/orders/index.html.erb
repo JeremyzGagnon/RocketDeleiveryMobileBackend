@@ -1,14 +1,27 @@
 <p style="color: green"><%= notice %></p>
 
-<h1>Orders</h1>
+<h1>Order</h1>
 
-<div id="orders">
+<p style="color: green"><%= notice %></p>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Rating </th>
+    </tr>
+  </thead>
+  <tbody>
   <% @orders.each do |order| %>
-    <%= render order %>
-    <p>
-      <%= link_to "Show this order", order %>
-    </p>
-  <% end %>
-</div>
+    <tr>
+      <td><%= order.restaurant_rating%></td>
+
+      <td><%= link_to 'Show', order %></td>
+      <%# <td><%= link_to 'Edit', edit_order(order) %>
+    <tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
 
 <%= link_to "New order", new_order_path %>

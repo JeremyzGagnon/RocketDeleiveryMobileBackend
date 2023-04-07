@@ -2,13 +2,30 @@
 
 <h1>Addresses</h1>
 
-<div id="addresses">
-  <% @addresses.each do |address| %>
-    <%= render address %>
-    <p>
-      <%= link_to "Show this address", address %>
-    </p>
-  <% end %>
-</div>
+<p style="color: green"><%= notice %></p>
 
-<%= link_to "New address", new_address_path %>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Street Adress</th>
+      <th scope="col">City</th>
+      <th scope="col">Postal Code</th>
+    </tr>
+  </thead>
+  <tbody>
+  <% @addresses.each do |address| %>
+    <tr>
+      <td><%= address.street_address%></td>
+      <td><%= address.city%></td>
+      <td><%= address.postal_code%></td>
+
+      <td><%= link_to 'Show', address %></td>
+      <td><%= link_to 'Edit', edit_address_path(address) %></td>
+    <tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to "New addresse", new_address_path %>

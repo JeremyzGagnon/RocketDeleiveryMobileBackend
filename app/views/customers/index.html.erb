@@ -2,13 +2,29 @@
 
 <h1>Customers</h1>
 
-<div id="customers">
+<p style="color: green"><%= notice %></p>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Phone</th>
+      <th scope="col">Email</th>
+      <th scope="col">Active</th>
+    </tr>
+  </thead>
+  <tbody>
   <% @customers.each do |customer| %>
-    <%= render customer %>
-    <p>
-      <%= link_to "Show this customer", customer %>
-    </p>
-  <% end %>
-</div>
+    <tr>
+      <td><%= customer.phone%></td>
+      <td><%= customer.email%></td>
+      <td><%= customer.active%></td>
+      <td><%= link_to 'Show', customer %></td>
+      <td><%= link_to 'Edit', edit_customer_path(customer) %></td>
+    <tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
 
 <%= link_to "New customer", new_customer_path %>
