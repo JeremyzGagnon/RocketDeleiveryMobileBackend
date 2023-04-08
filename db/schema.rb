@@ -10,11 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_04_05_183946) do
+ActiveRecord::Schema[7.0].define(version: 2023_04_08_143350) do
   create_table "addresses", force: :cascade do |t|
     t.string "street_address", null: false
     t.string "city", null: false
     t.string "postal_code", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "courier_statuses", force: :cascade do |t|
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_courier_statuses_on_name", unique: true
+  end
+
+  create_table "couriers", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "address_id", null: false
+    t.integer "courier_status_id", default: 1, null: false
+    t.string "phone", null: false
+    t.string "email"
+    t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -51,6 +69,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_05_183946) do
     t.integer "restaurant_rating"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "courier_id"
   end
 
   create_table "product_orders", force: :cascade do |t|
@@ -96,10 +115,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_04_05_183946) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "couriers", "addresses"
+  add_foreign_key "couriers", "courier_statuses"
+  add_foreign_key "couriers", "users"
   add_foreign_key "customers", "addresses"
   add_foreign_key "customers", "users"
   add_foreign_key "employees", "addresses"
   add_foreign_key "employees", "users"
+  add_foreign_key "orders", "couriers"
   add_foreign_key "orders", "customers"
   add_foreign_key "orders", "order_statuses"
   add_foreign_key "orders", "restaurants"
