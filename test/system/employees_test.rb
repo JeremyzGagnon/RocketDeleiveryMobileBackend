@@ -14,7 +14,7 @@ class EmployeesTest < ApplicationSystemTestCase
     visit employees_url
     click_on "New employee"
 
-    fill_in "Adress", with: @employee.adress_id
+    fill_in "Adress", with: @employee.address_id
     fill_in "Created at", with: @employee.created_at
     fill_in "Email", with: @employee.email
     fill_in "Phone", with: @employee.phone
@@ -30,7 +30,7 @@ class EmployeesTest < ApplicationSystemTestCase
     visit employee_url(@employee)
     click_on "Edit this employee", match: :first
 
-    fill_in "Adress", with: @employee.adress_id
+    fill_in "Adress", with: @employee.address_id
     fill_in "Created at", with: @employee.created_at
     fill_in "Email", with: @employee.email
     fill_in "Phone", with: @employee.phone

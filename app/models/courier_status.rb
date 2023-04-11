@@ -1,4 +1,4 @@
 class CourierStatus < ApplicationRecord
-    belongs_to :courier
-    
+  has_many :couriers
+  validates :name, presence: true
 end
