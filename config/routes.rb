@@ -7,11 +7,27 @@ Rails.application.routes.draw do
   resources :restaurants  
   resources :employees
   resources :addresses
-  devise_for :users, controllers: {
-    sessions: 'users/sessions'
-    }
-      devise_scope :user do  
-    get '/users/sign_out' => 'devise/sessions#destroy'     
-  end
+  devise_for :users
   root to: "home#index"
+
+  # devise_for :users, controllers: {
+  #   sessions: 'users/sessions'
+  #   }
+  #     devise_scope :user do  
+  #   get '/users/sign_out' => 'devise/sessions#destroy'     
+  # end
+  
+  namespace :api do
+    post 'login', to: 'auth#index'
+    get 'products', to: 'products#index'
+    get 'restaurants', to: 'restaurants#index'
+    post 'order/:id/status', to: 'orders#set_status'
+  end
+
+
+
 end
+
+
+
+

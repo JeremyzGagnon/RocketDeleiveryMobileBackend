@@ -1,0 +1,2 @@
+module ProductsController2Helper
+end

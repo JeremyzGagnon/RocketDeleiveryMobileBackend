@@ -1,0 +1,2 @@
+module RestaurantsController2Helper
+end

@@ -17,4 +17,11 @@ class User < ApplicationRecord
   def is_employee?
     Employee.find_by(id: self.id)
   end
+
+  def self.authenticate(email, password)
+    user = find_by(email: email)
+    return false unless user
+    user.authenticate(password)
+  end
+
 end
