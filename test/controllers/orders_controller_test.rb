@@ -12,70 +12,74 @@ class OrdersControllerTest < ActionDispatch::IntegrationTest
     @order = Order.create!(restaurant: restaurant, customer: customer, order_status: order_status, restaurant_rating: 4)
   end
 
-#   test "200 ok" do
-#     get "/api/orders", params: {type: ["customer", "restaurant", "courier"], id: integer}
-#     assert_response 200
-#     # assert_equal {
-#     #   "id": :id,
+# # My get tests
 
-#     # }
-#   test "return 422 error for invalid user type" do
-#     get "/api/orders", params: {type: ["customer", "restaurant", "courier"], id: integer}
-#     assert_response 422
-#     assert_equal ({"error: invalid user type"}.to_json, response.body)
+  test "order route exists and is GET route" do
+    assert_routing({ path: '/api/orders', method: :get }, { controller: 'api/orders', action: 'index' })
+  end
 
-#   end
+  test "get orders with valid type and id parameters" do
+    user = User.create!(name: "User 1", email: "test1@test.com", password: "password")
+    address = Address.create!(street_address: "Street 1", city: "City 1", postal_code: "11111")
+    customer = Customer.create!(user: user, address: address, phone: "123456")
+    get "/api/orders", params: { type: 'customer', id: customer.id }
+    assert_response :success
+    assert_not_nil @controller.instance_variable_get(:@order)
+  end
 
-#   test "return 200 response for id not found" do
-#     get "/api/orders", params: {type: ["customer", "restaurant", "courier"], id: integer}
-#     assert_response 200
-#     assert_equal ([], response.body)
-#   end
+  test "get orders with invalid type parameter" do
+    user = User.create!(name: "User 1", email: "test1@test.com", password: "password")
+    address = Address.create!(street_address: "Street 1", city: "City 1", postal_code: "11111")
+    customer = Customer.create!(user: user, address: address, phone: "123456")
+    get "/api/orders", params: { type: 'invalid', id: customer.id }
+    assert_response 422
+    assert_equal({ error: "Invalid user type parameter" }.to_json, response.body)
 
-#   test "return 400 error for empty user type and id" do
-#     get "/api/orders", params: {type: nil, id: nil}
-#     assert_response 400
-#     assert_equal ({"error: Both 'user type' and 'id' parameters are required"}.to_json, response.body)
-    
-#   end
+  end
 
+  test "get orders with nil type and id parameter" do
+    user = User.create!(name: "User 1", email: "test1@test.com", password: "password")
+    address = Address.create!(street_address: "Street 1", city: "City 1", postal_code: "11111")
+    customer = Customer.create!(user: user, address: address, phone: "123456")
+    get "/api/orders", params: { type: nil, id: nil}
+    assert_response 400
+    assert_equal({ error: "Both 'user type' and 'id' parameters are required" }.to_json, response.body)
 
-
-#   test "return 200 creates a new order" do
-#     post "/api/orders", params: { restaurant_id: nil, customer_id: nil, products: nil }
-#     assert_response 422
-#     assert_equal ({
-#         "restaurant_id": params[:restaurant_id],
-#         "customer_id": params[:customer_id],
-#         "products": [{}]
-#     }, response.body)
-#   end
-
-#   test "return 422 error for no restaurant, customer and product id" do
-#     post "/api/orders", params: {restaurant_id: nil, customer_id: nil, products: nil}
-#     assert_response 422
-#     assert_equal "error: Restaurant ID, customer ID, and products are required", response.body
-
-#   end
-
-#   test "return 422 error for no restaurant, customer and product id" do
-#     post "/api/orders", params: {restaurant_id: "not_an_integer", customer_id: "not_an_integer"}
-#     assert_response 422
-#     assert_equal "error: Invalid restaurant or customer ID", response.body
-#   end
-
-#   test "return 422 error for no restaurant, customer and product id" do
-#     post "/api/orders", params: {product: "not_an_integer"}
-#     assert_response 422
-#     assert_equal "error: Invalid product ID", response.body
-#   end
+  end
 
 
 
+# # My post test
+
+test "create an order" do
+  user2 = User.create!(name: "User 2", email: "test@test3.com", password: "password")
+  address2 = Address.create!(street_address: "Street 2", city: "City 2", postal_code: "2222")
+  restaurant2 = Restaurant.create!(user: user2, address: address2, name: "Restaurant 2", phone: "234567", price_range: 3)
+  customer2 = Customer.create!(user: user2, address: address2, phone: "123456")
+  product1 = Product.create!(name: "Product 1", cost: 10, restaurant: restaurant2)
+  product2 = Product.create!(name: "Product 2", cost: 100, restaurant: restaurant2)
+
+  post "/api/orders", params: {
+    restaurant_id: restaurant2.id,
+    customer_id: customer2.id,
+    products: [
+      { id: product1.id, quantity: 1, cost: 10 },
+      { id: product2.id, quantity: 2, cost: 10}
+    ]
+  }
+  assert_response :success
+  assert_not_nil @controller.instance_variable_get(:@order)
+end
+
+test "create an order with missing data" do
+  post "/api/orders"
+  assert_response 400
+  assert_equal({ error: "Restaurant ID, customer ID, and products aer required" }.to_json, response.body)
+end
 
 
 
-
+# # Premade test
   test "update order status to 'pending'" do
     post "/api/order/#{@order.id}/status", params: { status: "pending" }
     assert_response :success

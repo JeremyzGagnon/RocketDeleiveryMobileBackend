@@ -21,6 +21,8 @@ Rails.application.routes.draw do
     post 'login', to: 'auth#index'
     get 'products', to: 'products#index'
     get 'restaurants', to: 'restaurants#index'
+    get 'orders', to: 'orders#index'
+    post 'orders', to: 'orders#create'
     post 'order/:id/status', to: 'orders#set_status'
   end
 

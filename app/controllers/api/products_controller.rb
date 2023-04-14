@@ -3,32 +3,21 @@ module Api
       skip_before_action :verify_authenticity_token
       
       def index
-        data = JSON.parse(request.body.read)
-        
-        puts "DATA"
-        puts data.class
-        restaurant_id = data["restaurant"]
-        puts "restaurant_id"
-        puts restaurant_id 
-        @products = Product.where(restaurant_id: restaurant_id)
-        # puts "PRODUCT NAME"
-        # puts @products.name
-        # puts "PRODUCT ID"
-        # puts @products.id
-        # puts "PRODUCT COST"
-        # puts @products.cost
-
-        
-        if @products
-            products_array = []
-            @products.each do |product|
-              products_array << { id: product.id, name: product.name, cost: product.cost }
-            end
-            render json: products_array
-                else
-            render json: { error: "Invalid restaurant ID" }
+        restaurant_id = params[:restaurant]
+      
+        if restaurant_id.present?
+          @products = Product.where(restaurant_id: restaurant_id).select(:id, :name, :cost)
+      
+          if @products.any?
+            render json: @products
+          else
+            render json: { error: "Invalid restaurant ID" }, status: :unprocessable_entity
+          end
+        else
+          @products = []
+          render json: @products
         end
-        end
-    end
-  end
+      end
+              end
+end
   
