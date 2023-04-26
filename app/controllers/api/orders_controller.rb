@@ -15,9 +15,39 @@ module Api
           render json: { error: "Invalid user type parameter"}, status: :unprocessable_entity
         end
         if type == "customer"
-          @order = Order.where(customer_id: id)
-          render json: @order
-          
+          @orders = Order.where(customer_id: id)
+          @order_data = []
+          @orders.each do |order|
+            customer = Customer.find(order.customer_id)
+            restaurant = Restaurant.find(order.restaurant_id)
+            courier = Courier.find(order.courier_id).user_id
+            order_data = {
+              order_id: order.id,
+              customer_id: customer.id,
+              customer_name: User.find(order.customer_id).name,
+              customer_address: Address.find(customer.address_id).street_address,
+              restaurant_id: order.restaurant_id,
+              restaurant_name: restaurant.name,
+              restaurant_address: Address.find(restaurant.address_id).street_address,
+              courier_id: order.courier_id,
+              courier_name: User.find(courier).name,
+              status: OrderStatus.find(order.order_status_id).name,
+              product_orders: order.product_orders.map do |product_order|
+                cost = product_order.product_unit_cost * product_order.product_quantity
+                {
+                  product_id: product_order.product_id,
+                  product_name: Product.find(product_order.product_id).name,
+                  quantity: product_order.product_quantity,
+                  unit_cost: product_order.product_unit_cost,
+                  total_cost: cost
+                }
+              end
+            }
+            @order_data << order_data
+          end
+          render json: @order_data
+                                
+                  
         elsif type == "restaurant"
           @order = Order.where(restaurant_id: id)
           render json: @order

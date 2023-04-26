@@ -3,6 +3,8 @@ module Api
         skip_before_action :verify_authenticity_token
         def index
             data = JSON.parse(request.body.read)
+            # puts "DATA"
+            # puts data
             email = data["email"]
             password = data["password"]
             user = User.find_by(email: email)
