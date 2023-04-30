@@ -6,6 +6,40 @@ module Api
         type = params[:type]
         id = params[:id]
 
+        def fetch(query)
+          @orders = Order.where(query)
+          @order_data = []
+          @orders.each do |order|
+            customer = Customer.find(order.customer_id)
+            restaurant = Restaurant.find(order.restaurant_id)
+            courier = Courier.find(order.courier_id).user_id
+            order_data = {
+              order_id: order.id,
+              customer_id: customer.id,
+              customer_name: User.find(order.customer_id).name,
+              customer_address: Address.find(customer.address_id).street_address,
+              restaurant_id: order.restaurant_id,
+              restaurant_name: restaurant.name,
+              restaurant_address: Address.find(restaurant.address_id).street_address,
+              courier_id: order.courier_id,
+              courier_name: User.find(courier).name,
+              status: OrderStatus.find(order.order_status_id).name,
+              product_orders: order.product_orders.map do |product_order|
+                cost = product_order.product_unit_cost * product_order.product_quantity
+                {
+                  product_id: product_order.product_id,
+                  product_name: Product.find(product_order.product_id).name,
+                  quantity: product_order.product_quantity,
+                  unit_cost: product_order.product_unit_cost,
+                  total_cost: cost
+                }
+              end
+            }
+            @order_data << order_data
+          end
+          render json: @order_data
+        end
+
         if type.nil? && id.nil?
           render json: { error: "Both 'user type' and 'id' parameters are required" }, status: :bad_request
           return
@@ -15,107 +49,15 @@ module Api
           render json: { error: "Invalid user type parameter"}, status: :unprocessable_entity
         end
         if type == "customer"
-          @orders = Order.where(customer_id: id)
-          @order_data = []
-          @orders.each do |order|
-            customer = Customer.find(order.customer_id)
-            restaurant = Restaurant.find(order.restaurant_id)
-            courier = Courier.find(order.courier_id).user_id
-            order_data = {
-              order_id: order.id,
-              customer_id: customer.id,
-              customer_name: User.find(order.customer_id).name,
-              customer_address: Address.find(customer.address_id).street_address,
-              restaurant_id: order.restaurant_id,
-              restaurant_name: restaurant.name,
-              restaurant_address: Address.find(restaurant.address_id).street_address,
-              courier_id: order.courier_id,
-              courier_name: User.find(courier).name,
-              status: OrderStatus.find(order.order_status_id).name,
-              product_orders: order.product_orders.map do |product_order|
-                cost = product_order.product_unit_cost * product_order.product_quantity
-                {
-                  product_id: product_order.product_id,
-                  product_name: Product.find(product_order.product_id).name,
-                  quantity: product_order.product_quantity,
-                  unit_cost: product_order.product_unit_cost,
-                  total_cost: cost
-                }
-              end
-            }
-            @order_data << order_data
-          end
-          render json: @order_data
-                                
-                  
+          query = {customer_id: id}
+          fetch(query)                           
         elsif type == "restaurant"
-          @orders = Order.where(restaurant_id: id)
-          @order_data = []
-          @orders.each do |order|
-            customer = Customer.find(order.customer_id)
-            restaurant = Restaurant.find(order.restaurant_id)
-            courier = Courier.find(order.courier_id).user_id
-            order_data = {
-              order_id: order.id,
-              customer_id: customer.id,
-              customer_name: User.find(order.customer_id).name,
-              customer_address: Address.find(customer.address_id).street_address,
-              restaurant_id: order.restaurant_id,
-              restaurant_name: restaurant.name,
-              restaurant_address: Address.find(restaurant.address_id).street_address,
-              courier_id: order.courier_id,
-              courier_name: User.find(courier).name,
-              status: OrderStatus.find(order.order_status_id).name,
-              product_orders: order.product_orders.map do |product_order|
-                cost = product_order.product_unit_cost * product_order.product_quantity
-                {
-                  product_id: product_order.product_id,
-                  product_name: Product.find(product_order.product_id).name,
-                  quantity: product_order.product_quantity,
-                  unit_cost: product_order.product_unit_cost,
-                  total_cost: cost
-                }
-              end
-            }
-            @order_data << order_data
-          end
-          render json: @order_data
-
+          query = {restaurant_id: id}
+          fetch(query)
         elsif type == "courier"
-          @orders = Order.where(courier_id: id)
-          @order_data = []
-          @orders.each do |order|
-            customer = Customer.find(order.customer_id)
-            restaurant = Restaurant.find(order.restaurant_id)
-            courier = Courier.find(order.courier_id).user_id
-            order_data = {
-              order_id: order.id,
-              customer_id: customer.id,
-              customer_name: User.find(order.customer_id).name,
-              customer_address: Address.find(customer.address_id).street_address,
-              restaurant_id: order.restaurant_id,
-              restaurant_name: restaurant.name,
-              restaurant_address: Address.find(restaurant.address_id).street_address,
-              courier_id: order.courier_id,
-              courier_name: User.find(courier).name,
-              status: OrderStatus.find(order.order_status_id).name,
-              product_orders: order.product_orders.map do |product_order|
-                cost = product_order.product_unit_cost * product_order.product_quantity
-                {
-                  product_id: product_order.product_id,
-                  product_name: Product.find(product_order.product_id).name,
-                  quantity: product_order.product_quantity,
-                  unit_cost: product_order.product_unit_cost,
-                  total_cost: cost
-                }
-              end
-            }
-            @order_data << order_data
-          end
-          render json: @order_data
-          
+          query = {courier_id: id}
+          fetch(query)
         end
-
       end
 
       def create
